@@ -48,6 +48,24 @@ SELECT * FROM addresses WHERE id = 348;
 -- At what type of address did the Devious Delivery end up? --> At a Police Station
 -- What were the contents of the Devious Delivery? --> A Duck Debugger
 
+SELECT 
+    p.id AS package_id,
+    a1.address AS from_address,
+    a2.address AS delivered_address,
+    a2.address_type AS delivered_address_type,
+    p.contents
+FROM 
+    packages p
+LEFT JOIN 
+    addresses a1 ON p.from_address_id = a1.id
+JOIN 
+    scans s ON p.id = s.package_id
+JOIN 
+    addresses a2 ON s.delivered_address_id = a2.id
+WHERE 
+    p.from_address_id IS NULL
+    AND p.id = 5098;
+
 -- <==== Task 3 ====> --
 SELECT * FROM addresses WHERE address = '109 Tileston Street';
 -- Here we find the package and we fount the package_id, which is 9523;
@@ -60,3 +78,25 @@ SELECT * FROM addresses WHERE id = 7432;
 SELECT * FROM drivers WHERE id = 17;	
 -- What are the contents of the Forgotten Gift? --> The contents are flowers;
 -- Who has the Forgotten Gift? --> It is currently picked up from Mikel and being transported;
+
+SELECT 
+    p.id AS package_id,
+    a.address AS from_address,
+    s.scan_time AS dropped_at_time,
+    a2.address AS warehouse_address,
+    d.name AS driver_name,
+    p.contents,
+    p.status AS current_status
+FROM 
+    packages p
+JOIN 
+    addresses a ON p.from_address_id = a.id
+JOIN 
+    scans s ON p.id = s.package_id
+JOIN 
+    addresses a2 ON s.address_id = a2.id
+JOIN 
+    drivers d ON s.driver_id = d.id
+WHERE 
+    a.address = '109 Tileston Street'
+    AND p.id = 9523;
